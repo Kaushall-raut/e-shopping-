@@ -2,7 +2,6 @@
 import { ProductCard } from '@/components/ProductCard'
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -14,14 +13,14 @@ import { ArrowRightIcon } from 'lucide-react'
 export const Route = createFileRoute('/')({
   component: App,
   loader: () => {
-    console.log('Server')
+    // console.log('Server')
     return { products: sampleProducts.slice(0, 3) }
   },
 })
 
 function App() {
   const { products } = Route.useLoaderData()
-  console.log(products)
+  // console.log(products)
   return (
     <div className="space-y-12 bg-linear-to-b from-slate-50 via-white to-slate-50 p-6">
       <section>
