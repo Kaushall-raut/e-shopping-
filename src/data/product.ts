@@ -1,4 +1,65 @@
-export const sampleProducts = [
+/* eslint-disable @typescript-eslint/array-type */
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+/* eslint-disable import/order */
+import { db } from '@/db'
+import { products } from '@/db/schema'
+import type { ProductInsert, ProductSelect } from '@/db/schema'
+import { eq } from 'drizzle-orm'
+
+export async function getAllProducts() {
+  try {
+    const productsData = await db.select().from(products)
+    return productsData
+  } catch (error) {
+    console.error('Error getting all products:', error)
+    return []
+  }
+}
+
+export async function getRecommendedProducts() {
+  try {
+    const productsData = await db.select().from(products).limit(3)
+    return productsData
+  } catch (error) {
+    console.error('Error getting recommended products:', error)
+    return []
+  }
+}
+
+export async function getProductById(id: string) {
+  try {
+    const product = await db
+      .select()
+      .from(products)
+      .where(eq(products.id, id))
+      .limit(1)
+    return product?.[0] ?? null
+  } catch (error) {
+    console.error('Error getting product by id:', error)
+    return null
+  }
+}
+
+export async function createProduct(
+  data: ProductInsert,
+): Promise<ProductSelect> {
+  try {
+    const result = await db.insert(products).values(data).returning()
+    const product = result[0]
+    if (!product) {
+      throw new Error(
+        'Failed to create product: no product returned from database',
+      )
+    }
+
+    return product
+  } catch (error) {
+    console.error('Error creating product', error)
+    throw error
+  }
+}
+
+export const sampleProducts: ProductInsert[] = [
   {
     name: 'TanStack Router Pro',
     description:
@@ -35,7 +96,7 @@ export const sampleProducts = [
   {
     name: 'TanStack Start Framework',
     description:
-      'Full-stack React framework with file-based routing, server-side rendering, and built-in optimizations.',
+      'Full-stack React framework with file-based routing, server components, and built-in optimizations.',
     price: '199.99',
     rating: '4.6',
     reviews: 156,
@@ -83,4 +144,3 @@ export const sampleProducts = [
     inventory: 'preorder',
   },
 ]
-
